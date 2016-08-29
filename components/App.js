@@ -11,7 +11,7 @@ class App extends React.Component {
 	render () {
 		return (
 			<div>
-			<h1>Scrumptious List</h1>
+			<h1 id="title">To - Go</h1>
 				<Search />
 				<Results />
 			</div>

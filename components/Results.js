@@ -3,12 +3,20 @@ var React = require('react');
 var Results = () => (
 	<div id="results">
 	RESULTS
-	<thead>
-	  <tr>
-	    <th>...</th>
-	    <th>...</th>
-	  </tr>
-	</thead>
+	<table>
+	  <caption>...</caption>
+	  <thead>
+	    <tr>
+	      <th>YO</th>
+	      <th>YOOO</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr>
+	      <td>HEYYY</td>
+	    </tr>
+	  </tbody>
+	</table>
 	</div>
 )
 

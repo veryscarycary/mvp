@@ -21438,8 +21438,8 @@
 					null,
 					React.createElement(
 						'h1',
-						null,
-						'Scrumptious List'
+						{ id: 'title' },
+						'To - Go'
 					),
 					React.createElement(Search, null),
 					React.createElement(Results, null)
@@ -21512,20 +21512,42 @@
 			{ id: "results" },
 			"RESULTS",
 			React.createElement(
-				"thead",
+				"table",
 				null,
 				React.createElement(
-					"tr",
+					"caption",
+					null,
+					"..."
+				),
+				React.createElement(
+					"thead",
 					null,
 					React.createElement(
-						"th",
+						"tr",
 						null,
-						"..."
-					),
+						React.createElement(
+							"th",
+							null,
+							"YO"
+						),
+						React.createElement(
+							"th",
+							null,
+							"YOOO"
+						)
+					)
+				),
+				React.createElement(
+					"tbody",
+					null,
 					React.createElement(
-						"th",
+						"tr",
 						null,
-						"..."
+						React.createElement(
+							"td",
+							null,
+							"HEYYY"
+						)
 					)
 				)
 			)
