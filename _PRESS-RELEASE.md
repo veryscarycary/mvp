@@ -1,5 +1,7 @@
 # Project Name #
 
+Scrumptious-List
+
 <!-- 
 > This material was originally posted [here](http://www.quora.com/What-is-Amazons-approach-to-product-development-and-product-management). It is reproduced here for posterities sake.
 
@@ -19,26 +21,48 @@ Once the project moves into development, the press release can be used as a touc
 ## Heading ##
   > Name the product in a way the reader (i.e. your target customers) will understand.
 
+  A web app that allows you to build and manage your restaurant wish-list.
+
 ## Sub-Heading ##
   > Describe who the market for the product is and what benefit they get. One sentence only underneath the title.
+
+  The market for this app is directed towards 'foodies', or in other words, people that are very interested in different restaurant spots that they have not had a chance to visit yet.
 
 ## Summary ##
   > Give a summary of the product and the benefit. Assume the reader will not read anything else so make this paragraph good.
 
+  Scrumptious-List is a new app that allows any foodie to organize and manage their next food destinations. With tons of new and exciting eateries popping up, it can be hard to remember which ones you wanted to visit, or you may have delayed your visit depending on your cuisine preference that day. With scrumptious-list, you can search through restaurants and add them to your To-Visit list to keep track of them. Once added, you can add notes to each listing or add a level of priority to sort them. The next day you're hungry, you can simply check the app and find your next destination.
+
+
 ## Problem ##
   > Describe the problem your product solves.
+
+  Many foodies do not have a single source for keeping their favorite food destinations organized.
 
 ## Solution ##
   > Describe how your product elegantly solves the problem.
 
+  This application solves the problem by providing a single source that users can easily refer to that will concisely give them a list of restaurant destinations that they will visit next.
+
 ## Quote from You ##
   > A quote from a spokesperson in your company.
+
+  "It has never been so easy to keep track of your food-related priorities!"
 
 ## How to Get Started ##
   > Describe how easy it is to get started.
 
+  1. Simply log onto the website
+  2. Search for a restaurant, either by restaurant name or cuisine
+  3. Select the restaurant to add it to your list
+  4. manage list by removing items, or editing notes for each restaurant
+
 ## Customer Quote ##
   > Provide a quote from a hypothetical customer that describes how they experienced the benefit.
 
+  "Before I used this app, I would always forget to visit the taco spot that everyone raved about. Now I'll never have to worry about forgetting a new taco truck destination ever again!"
+
 ## Closing and Call to Action ##
   > Wrap it up and give pointers where the reader should go next.
+
+  If you would like to find out more information about this project, please visit the website and see what we have to offer.
