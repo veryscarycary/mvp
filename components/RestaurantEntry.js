@@ -1,7 +1,7 @@
 var React = require('react');
 
 var RestaurantEntry = () => (
-	<div id="results">
+	<div className="results">
 	ENTRY
 	</div>
 )

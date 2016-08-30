@@ -1,23 +1,13 @@
 var React = require('react');
+var RestaurantEntry = require('./RestaurantEntry');
 
-var Results = () => (
-	<div id="results">
+var Results = ({entries}) => (
+
+	<div className="results">
 	RESULTS
-	<table>
-	  <caption>...</caption>
-	  <thead>
-	    <tr>
-	      <th>YO</th>
-	      <th>YOOO</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <tr>
-	      <td>HEYYY</td>
-	    </tr>
-	  </tbody>
-	</table>
+		{ entries.map(entry => <RestaurantEntry entry={entry} />) }
 	</div>
 )
+
 
 module.exports = Results;

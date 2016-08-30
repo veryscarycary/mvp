@@ -19,25 +19,47 @@ class App extends React.Component {
 		super(props)
 
 		this.searchYelp = this.searchYelp.bind(this);
+
+		this.state = {results: {}};
 	}
 
 
 	searchYelp (term, callback) {
-		return fetch('http://localhost/post?t=' + term, {
-		method: 'POST'});
+		var that = this;
+
+		return fetch('/post', {
+			method: 'POST',
+			body: JSON.stringify({term: term})
+		}).then(function(results) { return results.json()})
+		.then(function(results) {
+			that.setState({results: results});
+		})
+		// 	).then(function(err, result) {
+		// 	console.log(result, "BACK FROM YELP REQ");
+		// 	this.setState({results: result});
+		// })
 
 	}
 
 	render () {
-		return (
-			<div>
-			<h1 id="title" >To - Go</h1>
-				<Search searchYelp={this.searchYelp}/>
-				<Results />
-			</div>
-		);
+		if (this.state.results.businesses) {
+			return (
+				<div>
+					<h1 id="title" >To - Go</h1>
+					<Search searchYelp={this.searchYelp}/>
+					<Results entries={this.state.results.businesses}/>
+				</div>
+			);
+		} else {
+			return (
+				<div>
+					<h1 id="title" >To - Go</h1>
+					<Search searchYelp={this.searchYelp}/>
+				</div>
+			);
+		}
 	}
-}
+};
 
 
 module.exports = App;

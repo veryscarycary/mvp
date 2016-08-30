@@ -18,9 +18,9 @@ app.use(express.static(__dirname + '/../'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/post', function (req, res) {
-	console.log(req.body);
-	yelp.search({ term: 'food', location: 'Montreal' })
+app.post('/post', function (req, res) {
+	console.log(req.body, "REQQQQQ BOOOOOOODY BEFORE GET");
+	yelp.search({ term: req.body.term, location: 'San Francisco'})
 	.then(function (data) {
 		res.send(data);
 	  console.log(data);
