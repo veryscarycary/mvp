@@ -21475,6 +21475,9 @@
 				// 	this.setState({results: result});
 				// })
 			}
+	
+			// gets togo list data from db
+	
 		}, {
 			key: 'getToGoList',
 			value: function getToGoList() {
@@ -21488,12 +21491,19 @@
 					that.setState({ results: results });
 				});
 			}
+	
+			// updates state AND posts to db
+	
 		}, {
 			key: 'updateSelected',
 			value: function updateSelected(entry) {
 				console.log("BUTTON CLICK WORKED", entry);
 				this.setState({ selected: entry }, function () {
 					fetch('/togolist', {
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json'
+						},
 						method: 'POST',
 						body: JSON.stringify(entry)
 					});

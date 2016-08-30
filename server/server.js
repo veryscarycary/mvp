@@ -1,9 +1,13 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const db = require('../db/index');
 const API_KEY = require('../API_KEY');
 const Yelp = require('yelp');
+const mongoose = require('mongoose');
+var Restaurant = require('../db/Restaurant.model')
+
+var db = 'mongodb://localhost/togolist';
+mongoose.connect(db);
 
 var yelp = new Yelp({
   consumer_key: API_KEY.consumer_key,
@@ -20,7 +24,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/post', function (req, res) {
-	console.log(req.body, "REQQQQQ BOOOOOOODY BEFORE GET");
 	yelp.search({ term: req.body.term, location: 'San Francisco'})
 	.then(function (data) {
 		res.send(data);
@@ -31,12 +34,32 @@ app.post('/post', function (req, res) {
 });
 
 app.get('/togolist', function (req, res) {
-
+	Restaurant.find()
+	.exec(function(error, restaurants) {
+		if (error) {
+			console.log('There was an error posting a restaurant to the db');
+		} else {
+			console.log(restaurants);
+			res.send(restaurants);
+		}
+	});
 });
 
+// posts user selected restaurant to db
 app.post('/togolist', function (req, res) {
-	console.log(req.body, "REQQQQQ BOOOOOOODY IN TOGOLISTPOST");
+	console.log(res.body, 'RESTAURANT');
+	var newRestaurant = new Restaurant();
 
+	newRestaurant.name = req.body.name;
+
+	newRestaurant.save(function(error, restaurant) {
+		if (error) {
+			console.log('There was an error posting a restaurant to the db');
+		} else {
+			console.log(restaurant);
+			res.send(restaurant);
+		}
+	});
 });
 
 app.listen(port, function(err) {

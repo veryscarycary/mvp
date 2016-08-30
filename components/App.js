@@ -53,6 +53,7 @@ class App extends React.Component {
 		// })
 	}
 
+	// gets togo list data from db
 	getToGoList () {
 		var that = this;
 
@@ -64,10 +65,15 @@ class App extends React.Component {
 		})
 	}
 
+	// updates state AND posts to db
 	updateSelected (entry) {
 		console.log("BUTTON CLICK WORKED", entry);
 		this.setState({selected: entry}, function() {
 			fetch('/togolist', {
+				headers: {
+				  'Accept': 'application/json',
+				  'Content-Type': 'application/json'
+				},
 				method: 'POST',
 				body: JSON.stringify(entry)
 			})
