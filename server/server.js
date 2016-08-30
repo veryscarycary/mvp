@@ -37,7 +37,37 @@ app.get('/togolist', function (req, res) {
 	Restaurant.find()
 	.exec(function(error, restaurants) {
 		if (error) {
-			console.log('There was an error posting a restaurant to the db');
+			console.log('There was an error getting a restaurant from the db');
+		} else {
+			console.log(restaurants);
+			res.send(restaurants);
+		}
+	});
+});
+
+app.post('/togolist', function (req, res) {
+	var newRestaurant = new Restaurant();
+
+	newRestaurant.name = req.body.name;
+
+	newRestaurant.save(function(error, restaurant) {
+		if (error) {
+			console.log('There was an error while adding a restaurant to the db');
+		} else {
+			console.log(restaurant);
+			res.send(restaurant);
+		}
+	});
+});
+
+///////////
+// Test delete and update later
+///////////
+
+app.delete('/togolist', function (req, res) {
+	Restaurant.findOneAndRemove({name: req.query.id}, function(error, restaurants) {
+		if (error) {
+			console.log('There was an error deleting a restaurant to the db');
 		} else {
 			console.log(restaurants);
 			res.send(restaurants);
@@ -46,15 +76,12 @@ app.get('/togolist', function (req, res) {
 });
 
 // posts user selected restaurant to db
-app.post('/togolist', function (req, res) {
-	console.log(res.body, 'RESTAURANT');
-	var newRestaurant = new Restaurant();
-
-	newRestaurant.name = req.body.name;
-
-	newRestaurant.save(function(error, restaurant) {
+app.put('/togolist', function (req, res) {
+	Restaurant.findOneAndUpdate({
+		name: req.query.name
+	}, {$set: {name: req.body.name}}, {upsert: true}, function(err, newRestaurant) {
 		if (error) {
-			console.log('There was an error posting a restaurant to the db');
+			console.log('There was an error updating a restaurant to the db');
 		} else {
 			console.log(restaurant);
 			res.send(restaurant);
