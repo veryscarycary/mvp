@@ -1,14 +1,15 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var db = require('../db/index');
-var Yelp = require('yelp');
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const db = require('../db/index');
+const API_KEY = require('../API_KEY');
+const Yelp = require('yelp');
 
 var yelp = new Yelp({
-  consumer_key: 'j-dZCAqpvvMioyTCEZ11Gg',
-  consumer_secret: 'vifitztKreRYYgvoKhqBvL3RzAg',
-  token: 'o7uAZXISQ4MTxe9mnpw3a_BLlf58VX1S',
-  token_secret: '-8s4C6nAUROUsmLpWO4oSWyzdsw',
+  consumer_key: API_KEY.consumer_key,
+  consumer_secret: API_KEY.consumer_secret,
+  token: API_KEY.token,
+  token_secret: API_KEY.token_secret,
 });
 
 
@@ -30,7 +31,7 @@ app.post('/post', function (req, res) {
 	});
 });
 
-app.get('/post', function (req, res) {
+app.get('/togolist', function (req, res) {
 	console.log(req.body, "REQQQQQ BOOOOOOODY BEFORE GET");
 	yelp.search({ term: req.body.term, location: 'San Francisco'})
 	.then(function (data) {
