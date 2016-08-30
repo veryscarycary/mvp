@@ -33,5 +33,8 @@
     "request": "^2.74.0",
     "underscore": "^1.8.3",
     "yelp": "^1.0.1"
+  },
+  "devDependencies": {
+    "json-loader": "^0.5.4"
   }
 }
