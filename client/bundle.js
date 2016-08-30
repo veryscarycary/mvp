@@ -21422,6 +21422,8 @@
 	var Results = __webpack_require__(174);
 	var Promise = __webpack_require__(235);
 	
+	// var requestYelp = require('../requestYelp');
+	
 	// requestYelp({'term': 'food'}, function(error, response, body) {
 	// 	if (error) {return error;}
 	
@@ -21444,7 +21446,10 @@
 	
 		_createClass(App, [{
 			key: 'searchYelp',
-			value: function searchYelp(term, callback) {}
+			value: function searchYelp(term, callback) {
+				return fetch('http://localhost/post?t=' + term, {
+					method: 'POST' });
+			}
 		}, {
 			key: 'render',
 			value: function render() {

@@ -1,71 +1,69 @@
-	var oauthSignature = require('oauth-signature');  
-	var n = require('nonce')();  
-	var request = require('request');  
-	var qs = require('querystring');  
-	var _ = require('lodash');
-	var API_KEY = require('../API_KEY');
+var API_KEY = require('./API_KEY');
 
+import querystring from 'querystring';
+import oauth from 'oauth';
 
-/* Function for yelp call
- * ------------------------
- * set_parameters: object with params to search
- * callback: callback(error, response, body)
- */
-var requestYelp = function(set_parameters, callback) {
+const OAuth = oauth.OAuth;
 
-	var params = {
-	  consumer_key: API_KEY.consumer_key,
-	  consumer_secret: API_KEY.consumer_secret,
-	  token: API_KEY.token,
-	  token_secret: API_KEY.token_secret,
-	};
+const baseUrl = 'http://api.yelp.com/v2/';
 
-  /* The type of request */
-  var httpMethod = 'GET';
+class Yelp {
+  constructor(opts) {
+    this.oauthToken = opts.token;
+    this.oauthTokenSecret = opts.token_secret;
+    this.oauth = new OAuth(
+      null,
+      null,
+      opts.consumer_key,
+      opts.consumer_secret,
+      opts.version || '1.0',
+      null,
+      'HMAC-SHA1'
+    );
+  }
 
-  /* The url we are using for the request */
-  var url = 'http://api.yelp.com/v2/search';
+  get(resource, params = {}, cb) {
+    const promise = new Promise((resolve, reject) => {
+      const debug = params.debug;
+      delete params.debug;
 
-  /* We can setup default parameters here */
-  var default_parameters = {
-    location: 'San+Francisco',
-    sort: '2'
-  };
+      this.oauth.get(
+        baseUrl + resource + '?' + querystring.stringify(params),
+        this.oauthToken,
+        this.oauthTokenSecret,
+        (err, _data, response) => {
+          if (err) return reject(err);
+          const data = JSON.parse(_data);
+          if (debug) return resolve([ data, response ]);
+          resolve(data);
+        }
+      );
+    });
+    if (typeof cb === 'function') {
+      promise
+        .then((res) => cb(null, res))
+        .catch(cb);
+      return null;
+    }
+    return promise;
+  }
 
-  /* We set the require parameters here */
-  var required_parameters = {
-    oauth_consumer_key : params.consumer_key,
-    oauth_token : params.token,
-    oauth_nonce : n(),
-    oauth_timestamp : n().toString().substr(0,10),
-    oauth_signature_method : 'HMAC-SHA1',
-    oauth_version : '1.0'
-  };
+  search(params, callback) {
+    return this.get('search', params, callback);
+  }
 
-  /* We combine all the parameters in order of importance */ 
-  var parameters = _.assign(default_parameters, set_parameters, required_parameters);
+  business(id, callback) {
+    return this.get('business/' + id, undefined, callback);
+  }
 
-  /* We set our secrets here */
-  var consumerSecret = params.consumer_secret;
-  var tokenSecret = params.env.token_secret;
+  /**
+   * Exampe:
+   * yelp.phone_search({phone: "+12223334444"}, function(error, data) {});
+   */
+  phoneSearch(params, callback) {
+    return this.get('phone_search', params, callback);
+  }
+}
 
-  /* Then we call Yelp's Oauth 1.0a server, and it returns a signature */
-  /* Note: This signature is only good for 300 seconds after the oauth_timestamp */
-  var signature = oauthSignature.generate(httpMethod, url, parameters, consumerSecret, tokenSecret, { encodeSignature: false});
-
-  /* We add the signature to the list of paramters */
-  parameters.oauth_signature = signature;
-
-  /* Then we turn the paramters object, to a query string */
-  var paramURL = qs.stringify(parameters);
-
-  /* Add the query string to the url */
-  var apiURL = url+'?'+paramURL;
-  console.log(apiUrl);
-
-  /* Then we use request to send make the API Request */
-  request(apiURL, function(error, response, body){
-    return callback(error, response, body);
-  });
-};
+module.exports = Yelp;
 

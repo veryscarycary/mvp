@@ -3,6 +3,8 @@ var Search = require('./Search');
 var Results = require('./Results');
 var Promise = require('bluebird');
 
+// var requestYelp = require('../requestYelp');
+
 // requestYelp({'term': 'food'}, function(error, response, body) {
 // 	if (error) {return error;}
 
@@ -21,13 +23,15 @@ class App extends React.Component {
 
 
 	searchYelp (term, callback) {
-		
+		return fetch('http://localhost/post?t=' + term, {
+		method: 'POST'});
+
 	}
 
 	render () {
 		return (
 			<div>
-			<h1 id="title">To - Go</h1>
+			<h1 id="title" >To - Go</h1>
 				<Search searchYelp={this.searchYelp}/>
 				<Results />
 			</div>
