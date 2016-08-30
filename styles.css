@@ -62,6 +62,14 @@ ol, ul
 	border-color: #444444;
 }
 
+input {
+	width: 300px;
+}
+
+button {
+	margin-left: 20px;
+}
+
 
 table, caption, tr, thead, td {
 	text-align: center;
