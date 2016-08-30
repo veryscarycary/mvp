@@ -30,6 +30,18 @@ app.post('/post', function (req, res) {
 	});
 });
 
+app.get('/post', function (req, res) {
+	console.log(req.body, "REQQQQQ BOOOOOOODY BEFORE GET");
+	yelp.search({ term: req.body.term, location: 'San Francisco'})
+	.then(function (data) {
+		res.send(data);
+	  console.log(data);
+	})
+	.catch(function (err) {
+	  console.error(err);
+	});
+});
+
 app.listen(port, function(err) {
 	if (err) {
 		console.log('Something went wrong!')

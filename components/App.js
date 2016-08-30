@@ -1,6 +1,8 @@
 var React = require('react');
 var Search = require('./Search');
 var Results = require('./Results');
+var Nav = require('./Nav');
+var Title = require('./Title');
 var Promise = require('bluebird');
 
 // var requestYelp = require('../requestYelp');
@@ -45,7 +47,8 @@ class App extends React.Component {
 		if (this.state.results.businesses) {
 			return (
 				<div>
-					<h1 id="title" >To - Go</h1>
+					<Nav />
+					<Title />
 					<Search searchYelp={this.searchYelp}/>
 					<Results entries={this.state.results.businesses}/>
 				</div>
@@ -53,8 +56,10 @@ class App extends React.Component {
 		} else {
 			return (
 				<div>
-					<h1 id="title" >To - Go</h1>
+					<Nav />
+					<Title />
 					<Search searchYelp={this.searchYelp}/>
+					<div className="container"></div>
 				</div>
 			);
 		}
