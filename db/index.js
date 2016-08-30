@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/scrumptiousList');
+mongoose.connect('mongodb://localhost/togolist');
 
 
 

@@ -21,8 +21,13 @@ class App extends React.Component {
 		super(props)
 
 		this.searchYelp = this.searchYelp.bind(this);
+		this.updateSelected = this.updateSelected.bind(this);
 
-		this.state = {results: {}};
+		this.state = {
+			results: {},
+			selected: null,
+			toGoList: null
+		};
 	}
 
 
@@ -30,17 +35,43 @@ class App extends React.Component {
 		var that = this;
 
 		return fetch('/post', {
+			headers: {
+			  'Accept': 'application/json',
+			  'Content-Type': 'application/json'
+			},
 			method: 'POST',
 			body: JSON.stringify({term: term})
-		}).then(function(results) { return results.json()})
+		})
+		.then(function(results) { 
+			return results.json()})
 		.then(function(results) {
 			that.setState({results: results});
-		})
+		});
 		// 	).then(function(err, result) {
 		// 	console.log(result, "BACK FROM YELP REQ");
 		// 	this.setState({results: result});
 		// })
+	}
 
+	getToGoList () {
+		var that = this;
+
+		return fetch('/togolist', {
+			method: 'GET',
+		}).then(function(results) { return results.json()})
+		.then(function(results) {
+			that.setState({results: results});
+		})
+	}
+
+	updateSelected (entry) {
+		console.log("BUTTON CLICK WORKED", entry);
+		this.setState({selected: entry}, function() {
+			fetch('/togolist', {
+				method: 'POST',
+				body: JSON.stringify(entry)
+			})
+		});
 	}
 
 	render () {
@@ -50,7 +81,7 @@ class App extends React.Component {
 					<Nav />
 					<Title />
 					<Search searchYelp={this.searchYelp}/>
-					<Results entries={this.state.results.businesses}/>
+					<Results entries={this.state.results.businesses} updateSelected={this.updateSelected} />
 				</div>
 			);
 		} else {

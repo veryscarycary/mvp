@@ -24,7 +24,6 @@ app.post('/post', function (req, res) {
 	yelp.search({ term: req.body.term, location: 'San Francisco'})
 	.then(function (data) {
 		res.send(data);
-	  console.log(data);
 	})
 	.catch(function (err) {
 	  console.error(err);
@@ -32,15 +31,12 @@ app.post('/post', function (req, res) {
 });
 
 app.get('/togolist', function (req, res) {
-	console.log(req.body, "REQQQQQ BOOOOOOODY BEFORE GET");
-	yelp.search({ term: req.body.term, location: 'San Francisco'})
-	.then(function (data) {
-		res.send(data);
-	  console.log(data);
-	})
-	.catch(function (err) {
-	  console.error(err);
-	});
+
+});
+
+app.post('/togolist', function (req, res) {
+	console.log(req.body, "REQQQQQ BOOOOOOODY IN TOGOLISTPOST");
+
 });
 
 app.listen(port, function(err) {

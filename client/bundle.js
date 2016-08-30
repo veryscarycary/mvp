@@ -21443,8 +21443,13 @@
 			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
 	
 			_this.searchYelp = _this.searchYelp.bind(_this);
+			_this.updateSelected = _this.updateSelected.bind(_this);
 	
-			_this.state = { results: {} };
+			_this.state = {
+				results: {},
+				selected: null,
+				toGoList: null
+			};
 			return _this;
 		}
 	
@@ -21454,6 +21459,10 @@
 				var that = this;
 	
 				return fetch('/post', {
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json'
+					},
 					method: 'POST',
 					body: JSON.stringify({ term: term })
 				}).then(function (results) {
@@ -21467,6 +21476,30 @@
 				// })
 			}
 		}, {
+			key: 'getToGoList',
+			value: function getToGoList() {
+				var that = this;
+	
+				return fetch('/togolist', {
+					method: 'GET'
+				}).then(function (results) {
+					return results.json();
+				}).then(function (results) {
+					that.setState({ results: results });
+				});
+			}
+		}, {
+			key: 'updateSelected',
+			value: function updateSelected(entry) {
+				console.log("BUTTON CLICK WORKED", entry);
+				this.setState({ selected: entry }, function () {
+					fetch('/togolist', {
+						method: 'POST',
+						body: JSON.stringify(entry)
+					});
+				});
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				if (this.state.results.businesses) {
@@ -21476,7 +21509,7 @@
 						React.createElement(Nav, null),
 						React.createElement(Title, null),
 						React.createElement(Search, { searchYelp: this.searchYelp }),
-						React.createElement(Results, { entries: this.state.results.businesses })
+						React.createElement(Results, { entries: this.state.results.businesses, updateSelected: this.updateSelected })
 					);
 				} else {
 					return React.createElement(
@@ -21572,12 +21605,13 @@
 	
 	var Results = function Results(_ref) {
 		var entries = _ref.entries;
+		var updateSelected = _ref.updateSelected;
 		return React.createElement(
 			'div',
 			{ className: 'results' },
 			'RESULTS',
 			entries.map(function (entry) {
-				return React.createElement(RestaurantEntry, { entry: entry });
+				return React.createElement(RestaurantEntry, { entry: entry, updateSelected: updateSelected });
 			})
 		);
 	};
@@ -21594,9 +21628,12 @@
 	
 	var RestaurantEntry = function RestaurantEntry(_ref) {
 		var entry = _ref.entry;
+		var updateSelected = _ref.updateSelected;
 		return React.createElement(
 			"div",
-			{ className: "entryClass" },
+			{ className: "entryClass", onClick: function onClick() {
+					return updateSelected(entry);
+				} },
 			React.createElement("img", { src: entry.image_url }),
 			React.createElement("br", null),
 			React.createElement("img", { src: entry.rating_img_url }),
