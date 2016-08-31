@@ -21444,11 +21444,13 @@
 	
 			_this.searchYelp = _this.searchYelp.bind(_this);
 			_this.updateSelected = _this.updateSelected.bind(_this);
+			_this.getToGoList = _this.getToGoList.bind(_this);
 	
 			_this.state = {
 				results: {},
 				selected: null,
-				toGoList: null
+				toGoList: null,
+				search: true
 			};
 			return _this;
 		}
@@ -21468,7 +21470,8 @@
 				}).then(function (results) {
 					return results.json();
 				}).then(function (results) {
-					that.setState({ results: results });
+					console.log(results, "SEARCH YELP RESULTS");
+					that.setState({ results: results.businesses });
 				});
 				// 	).then(function(err, result) {
 				// 	console.log(result, "BACK FROM YELP REQ");
@@ -21488,7 +21491,11 @@
 				}).then(function (results) {
 					return results.json();
 				}).then(function (results) {
-					that.setState({ results: results });
+					console.log(results, "RESULTS");
+					that.setState({
+						results: results,
+						search: false
+					});
 				});
 			}
 	
@@ -21499,7 +21506,7 @@
 			value: function updateSelected(entry) {
 				console.log("BUTTON CLICK WORKED", entry);
 				this.setState({ selected: entry }, function () {
-					fetch('/togolist', {
+					return fetch('/togolist', {
 						headers: {
 							'Accept': 'application/json',
 							'Content-Type': 'application/json'
@@ -21512,23 +21519,33 @@
 		}, {
 			key: 'render',
 			value: function render() {
-				if (this.state.results.businesses) {
+				// if (this.state.search) {
+				// 	var componentToRender = <Results entries={this.state.results.businesses} updateSelected={this.updateSelected} />
+				// } else {
+				// 	var componentToRender = 
+				// }
+	
+				if (this.state.results.length) {
 					return React.createElement(
 						'div',
 						null,
-						React.createElement(Nav, null),
+						React.createElement(Nav, { getToGoList: this.getToGoList }),
 						React.createElement(Title, null),
 						React.createElement(Search, { searchYelp: this.searchYelp }),
-						React.createElement(Results, { entries: this.state.results.businesses, updateSelected: this.updateSelected })
+						React.createElement(Results, { entries: this.state.results, updateSelected: this.updateSelected })
 					);
 				} else {
 					return React.createElement(
 						'div',
 						null,
-						React.createElement(Nav, null),
+						React.createElement(Nav, { getToGoList: this.getToGoList }),
 						React.createElement(Title, null),
 						React.createElement(Search, { searchYelp: this.searchYelp }),
-						React.createElement('div', { className: 'container' })
+						React.createElement(
+							'div',
+							{ className: 'container' },
+							'Add restaurants to your list'
+						)
 					);
 				}
 			}
@@ -27339,16 +27356,16 @@
 						null,
 						React.createElement(
 							"a",
-							{ href: "/post" },
+							{ href: "#" },
 							"Search"
 						)
 					),
 					React.createElement(
 						"li",
-						null,
+						{ onClick: this.props.getToGoList },
 						React.createElement(
 							"a",
-							{ href: "/get" },
+							{ href: "#" },
 							"To-Go List"
 						)
 					)

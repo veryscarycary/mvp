@@ -19,8 +19,8 @@ class Nav extends React.Component {
 	render () {
 		return (
 			<ul id="nav">
-				<li><a href="/post">Search</a></li>
-				<li><a href="/get">To-Go List</a></li>
+				<li><a href="#">Search</a></li>
+				<li onClick={this.props.getToGoList}><a href="#">To-Go List</a></li>
 			</ul>
 		)
 	}

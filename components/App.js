@@ -22,11 +22,13 @@ class App extends React.Component {
 
 		this.searchYelp = this.searchYelp.bind(this);
 		this.updateSelected = this.updateSelected.bind(this);
+		this.getToGoList = this.getToGoList.bind(this);
 
 		this.state = {
 			results: {},
 			selected: null,
-			toGoList: null
+			toGoList: null,
+			search: true
 		};
 	}
 
@@ -45,7 +47,8 @@ class App extends React.Component {
 		.then(function(results) { 
 			return results.json()})
 		.then(function(results) {
-			that.setState({results: results});
+			console.log(results, "SEARCH YELP RESULTS");
+			that.setState({results: results.businesses});
 		});
 		// 	).then(function(err, result) {
 		// 	console.log(result, "BACK FROM YELP REQ");
@@ -61,42 +64,54 @@ class App extends React.Component {
 			method: 'GET',
 		}).then(function(results) { return results.json()})
 		.then(function(results) {
-			that.setState({results: results});
-		})
+			console.log(results, "RESULTS");
+			that.setState({
+				results: results,
+				search: false
+			});
+		});
 	}
 
 	// updates state AND posts to db
 	updateSelected (entry) {
 		console.log("BUTTON CLICK WORKED", entry);
 		this.setState({selected: entry}, function() {
-			fetch('/togolist', {
+			return fetch('/togolist', {
 				headers: {
 				  'Accept': 'application/json',
 				  'Content-Type': 'application/json'
 				},
 				method: 'POST',
 				body: JSON.stringify(entry)
-			})
+			});
 		});
 	}
 
 	render () {
-		if (this.state.results.businesses) {
+		// if (this.state.search) {
+		// 	var componentToRender = <Results entries={this.state.results.businesses} updateSelected={this.updateSelected} />
+		// } else {
+		// 	var componentToRender = 
+		// }
+
+		if (this.state.results.length) {
 			return (
 				<div>
-					<Nav />
+					<Nav getToGoList={this.getToGoList} />
 					<Title />
 					<Search searchYelp={this.searchYelp}/>
-					<Results entries={this.state.results.businesses} updateSelected={this.updateSelected} />
+					<Results entries={this.state.results} updateSelected={this.updateSelected} />
 				</div>
 			);
 		} else {
 			return (
 				<div>
-					<Nav />
+					<Nav getToGoList={this.getToGoList} />
 					<Title />
 					<Search searchYelp={this.searchYelp}/>
-					<div className="container"></div>
+					<div className="container">
+					Add restaurants to your list 
+					</div>
 				</div>
 			);
 		}
