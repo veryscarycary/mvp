@@ -110,7 +110,9 @@ class App extends React.Component {
 					<Title />
 					<Search searchYelp={this.searchYelp}/>
 					<div className="container">
-					Add restaurants to your list 
+						<p id="paragraph"> Quick! Add your favorite food and soon to be favorite restaurants
+					 above so your next foodie adventure is never more than a finger tip away!
+					 </p>
 					</div>
 				</div>
 			);

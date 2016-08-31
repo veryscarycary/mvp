@@ -122,6 +122,22 @@ table, caption, tr, thead, td {
 	text-align: center;
 }
 
+.checks {
+	width: 30px;
+	height: 30px;
+}
+
+#paragraph {
+	width: 300px;
+	font-family: 'Varela', sans-serif;
+	font-weight: bold;
+	font-size: 12pt;
+	position: relative;
+	top: 25%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
 p
 {
 	line-height: 180%;

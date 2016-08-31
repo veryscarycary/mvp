@@ -21544,7 +21544,11 @@
 						React.createElement(
 							'div',
 							{ className: 'container' },
-							'Add restaurants to your list'
+							React.createElement(
+								'p',
+								{ id: 'paragraph' },
+								' Quick! Add your favorite food and soon to be favorite restaurants above so your next foodie adventure is never more than a finger tip away!'
+							)
 						)
 					);
 				}
@@ -21658,9 +21662,7 @@
 		var updateSelected = _ref.updateSelected;
 		return React.createElement(
 			"div",
-			{ className: "entryClass", onClick: function onClick() {
-					return updateSelected(entry);
-				} },
+			{ className: "entryClass" },
 			React.createElement("img", { src: entry.image_url }),
 			React.createElement("br", null),
 			React.createElement("img", { src: entry.rating_img_url }),
@@ -21668,7 +21670,16 @@
 				"h3",
 				null,
 				entry.name
-			)
+			),
+			React.createElement(
+				"p",
+				null,
+				entry.location.display_address
+			),
+			React.createElement("img", { className: "checks", onClick: function onClick() {
+					return updateSelected(entry);
+				}, src: "http://www.452brasil.com/public/componenti/1989/f1/check-mark-5-512.gif" }),
+			React.createElement("img", { className: "checks", src: "https://www.mbamission.com/blog/wp-content/uploads/2015/09/incorrect-294245_1280.png" })
 		);
 	};
 	

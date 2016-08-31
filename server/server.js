@@ -49,6 +49,8 @@ app.post('/togolist', function (req, res) {
 	var newRestaurant = new Restaurant();
 
 	newRestaurant.name = req.body.name;
+	newRestaurant.image_url = req.body.image_url;
+	newRestaurant.rating_img_url = req.body.rating_img_url;
 
 	newRestaurant.save(function(error, restaurant) {
 		if (error) {
