@@ -49,7 +49,7 @@ ol, ul
 	padding: 0;
 	list-style: none;
 	background-color: #f2f2f2;
-	border-bottom: 1px solid #ccc; 
+	border-bottom: 1px solid #ccc;
 	border-top: 1px solid #ccc;
 	z-index: 2 }
 #nav li {
@@ -81,7 +81,7 @@ ol, ul
 	/*stitching*/
 	outline: 1px dashed #98abb9;
 	outline-offset: -5px;
-	
+
 	background-color: #556068;
 	height: 80px;
 	width: 150px;
@@ -97,6 +97,15 @@ ol, ul
 	text-align: center;
 }
 
+#resultsTitle {
+	font-family: 'Varela', sans-serif;
+	font-weight: bold;
+	font-size: 12pt;
+	text-decoration: underline;
+	margin-bottom: 10px;
+}
+
+
 .results, .container {
 	margin-top: 20px;
 	text-align: center;
@@ -107,6 +116,18 @@ ol, ul
   border-width: 4px;
   width: 800px;
 	height: 600px;
+}
+
+.restaurantEntry {
+	height: 280px;
+	width: 100px;
+	margin-left: 80px;
+	margin-right: 80px;
+}
+
+.flexRowWrap {
+	display: flex;
+	flex-flow: row wrap;
 }
 
 input {
@@ -125,6 +146,7 @@ table, caption, tr, thead, td {
 .checks {
 	width: 30px;
 	height: 30px;
+	margin-bottom: 15px;
 }
 
 #paragraph {
@@ -138,10 +160,6 @@ table, caption, tr, thead, td {
 	transform: translate(-50%, -50%);
 }
 
-p
-{
-	line-height: 180%;
-}
 
 a
 {

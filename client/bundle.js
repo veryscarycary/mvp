@@ -192,25 +192,40 @@
 	var cachedSetTimeout;
 	var cachedClearTimeout;
 	
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
 	(function () {
 	    try {
-	        cachedSetTimeout = setTimeout;
-	    } catch (e) {
-	        cachedSetTimeout = function () {
-	            throw new Error('setTimeout is not defined');
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
 	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
 	    }
 	    try {
-	        cachedClearTimeout = clearTimeout;
-	    } catch (e) {
-	        cachedClearTimeout = function () {
-	            throw new Error('clearTimeout is not defined');
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
 	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
 	    }
 	} ())
 	function runTimeout(fun) {
 	    if (cachedSetTimeout === setTimeout) {
 	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
 	        return setTimeout(fun, 0);
 	    }
 	    try {
@@ -231,6 +246,11 @@
 	function runClearTimeout(marker) {
 	    if (cachedClearTimeout === clearTimeout) {
 	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
 	        return clearTimeout(marker);
 	    }
 	    try {
@@ -21420,142 +21440,154 @@
 	var React = __webpack_require__(166);
 	var Search = __webpack_require__(173);
 	var Results = __webpack_require__(174);
-	var Nav = __webpack_require__(178);
-	var Title = __webpack_require__(179);
-	var Promise = __webpack_require__(176);
+	var Nav = __webpack_require__(176);
+	var Title = __webpack_require__(177);
+	var Promise = __webpack_require__(178);
 	
 	// var requestYelp = require('../requestYelp');
 	
 	// requestYelp({'term': 'food'}, function(error, response, body) {
-	// 	if (error) {return error;}
+	//  if (error) {return error;}
 	
-	// 	console.log(response);
-	// 	console.log(body);
+	//  console.log(response);
+	//  console.log(body);
 	// });
 	
 	
 	var App = function (_React$Component) {
-		_inherits(App, _React$Component);
+	  _inherits(App, _React$Component);
 	
-		function App(props) {
-			_classCallCheck(this, App);
+	  function App(props) {
+	    _classCallCheck(this, App);
 	
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
 	
-			_this.searchYelp = _this.searchYelp.bind(_this);
-			_this.updateSelected = _this.updateSelected.bind(_this);
-			_this.getToGoList = _this.getToGoList.bind(_this);
+	    _this.searchYelp = _this.searchYelp.bind(_this);
+	    _this.addSelected = _this.addSelected.bind(_this);
+	    _this.getToGoList = _this.getToGoList.bind(_this);
+	    _this.deleteSelected = _this.deleteSelected.bind(_this);
 	
-			_this.state = {
-				results: {},
-				selected: null,
-				toGoList: null,
-				search: true
-			};
-			return _this;
-		}
+	    _this.state = {
+	      results: {},
+	      selected: null,
+	      toGoList: null
+	    };
+	    return _this;
+	  }
 	
-		_createClass(App, [{
-			key: 'searchYelp',
-			value: function searchYelp(term, callback) {
-				var that = this;
+	  _createClass(App, [{
+	    key: 'searchYelp',
+	    value: function searchYelp(term, callback) {
+	      var that = this;
+	      term ? 'term' : 'food';
 	
-				return fetch('/post', {
-					headers: {
-						'Accept': 'application/json',
-						'Content-Type': 'application/json'
-					},
-					method: 'POST',
-					body: JSON.stringify({ term: term })
-				}).then(function (results) {
-					return results.json();
-				}).then(function (results) {
-					console.log(results, "SEARCH YELP RESULTS");
-					that.setState({ results: results.businesses });
-				});
-				// 	).then(function(err, result) {
-				// 	console.log(result, "BACK FROM YELP REQ");
-				// 	this.setState({results: result});
-				// })
-			}
+	      return fetch('/post', {
+	        headers: {
+	          'Accept': 'application/json',
+	          'Content-Type': 'application/json'
+	        },
+	        method: 'POST',
+	        body: JSON.stringify({ term: term })
+	      }).then(function (results) {
+	        return results.json();
+	      }).then(function (results) {
+	        console.log(results, "SEARCH YELP RESULTS");
+	        that.setState({ results: results.businesses });
+	      });
+	      //  ).then(function(err, result) {
+	      //  console.log(result, "BACK FROM YELP REQ");
+	      //  this.setState({results: result});
+	      // })
+	    }
 	
-			// gets togo list data from db
+	    // gets togo list data from db
 	
-		}, {
-			key: 'getToGoList',
-			value: function getToGoList() {
-				var that = this;
+	  }, {
+	    key: 'getToGoList',
+	    value: function getToGoList() {
+	      var that = this;
+	      console.log('Please check the results on console');
 	
-				return fetch('/togolist', {
-					method: 'GET'
-				}).then(function (results) {
-					return results.json();
-				}).then(function (results) {
-					console.log(results, "RESULTS");
-					that.setState({
-						results: results,
-						search: false
-					});
-				});
-			}
+	      return fetch('/togolist', {
+	        method: 'GET'
+	      }).then(function (results) {
+	        return results.json();
+	      }).then(function (results) {
+	        console.log(results, 'RESULTS');
+	        that.setState({
+	          results: results
+	        });
+	      });
+	    }
 	
-			// updates state AND posts to db
+	    // updates state AND posts to db
 	
-		}, {
-			key: 'updateSelected',
-			value: function updateSelected(entry) {
-				console.log("BUTTON CLICK WORKED", entry);
-				this.setState({ selected: entry }, function () {
-					return fetch('/togolist', {
-						headers: {
-							'Accept': 'application/json',
-							'Content-Type': 'application/json'
-						},
-						method: 'POST',
-						body: JSON.stringify(entry)
-					});
-				});
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				// if (this.state.search) {
-				// 	var componentToRender = <Results entries={this.state.results.businesses} updateSelected={this.updateSelected} />
-				// } else {
-				// 	var componentToRender = 
-				// }
+	  }, {
+	    key: 'addSelected',
+	    value: function addSelected(entry) {
+	      this.setState({ selected: entry }, function () {
+	        return fetch('/togolist', {
+	          headers: {
+	            'Accept': 'application/json',
+	            'Content-Type': 'application/json'
+	          },
+	          method: 'POST',
+	          body: JSON.stringify(entry)
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'deleteSelected',
+	    value: function deleteSelected(entry) {
+	      return fetch('/togolist', {
+	        headers: {
+	          'Accept': 'application/json',
+	          'Content-Type': 'application/json'
+	        },
+	        method: 'POST',
+	        body: JSON.stringify(entry)
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      // if (this.state.search) {
+	      //  var componentToRender = <Results entries={this.state.results.businesses} addSelected={this.addSelected} />
+	      // } else {
+	      //  var componentToRender = 
+	      // }
 	
-				if (this.state.results.length) {
-					return React.createElement(
-						'div',
-						null,
-						React.createElement(Nav, { getToGoList: this.getToGoList }),
-						React.createElement(Title, null),
-						React.createElement(Search, { searchYelp: this.searchYelp }),
-						React.createElement(Results, { entries: this.state.results, updateSelected: this.updateSelected })
-					);
-				} else {
-					return React.createElement(
-						'div',
-						null,
-						React.createElement(Nav, { getToGoList: this.getToGoList }),
-						React.createElement(Title, null),
-						React.createElement(Search, { searchYelp: this.searchYelp }),
-						React.createElement(
-							'div',
-							{ className: 'container' },
-							React.createElement(
-								'p',
-								{ id: 'paragraph' },
-								' Quick! Add your favorite food and soon to be favorite restaurants above so your next foodie adventure is never more than a finger tip away!'
-							)
-						)
-					);
-				}
-			}
-		}]);
+	      if (this.state.results.length) {
+	        return React.createElement(
+	          'div',
+	          null,
+	          React.createElement(Nav, { searchYelp: this.searchYelp, getToGoList: this.getToGoList }),
+	          React.createElement(Title, null),
+	          React.createElement(Search, { searchYelp: this.searchYelp }),
+	          React.createElement(Results, { entries: this.state.results, addSelected: this.addSelected, deleteSelected: this.deleteSelected })
+	        );
+	      } else {
+	        return React.createElement(
+	          'div',
+	          null,
+	          React.createElement(Nav, { searchYelp: this.searchYelp, getToGoList: this.getToGoList }),
+	          React.createElement(Title, null),
+	          React.createElement(Search, { searchYelp: this.searchYelp }),
+	          React.createElement(
+	            'div',
+	            { className: 'container' },
+	            React.createElement(
+	              'p',
+	              { id: 'paragraph' },
+	              ' Quick! Add your favorite food and soon to be favorite restaurants above so your next foodie adventure is never more than a finger tip away!'
+	            )
+	          )
+	        );
+	      }
+	    }
+	  }]);
 	
-		return App;
+	  return App;
 	}(React.Component);
 	
 	;
@@ -21636,14 +21668,25 @@
 	
 	var Results = function Results(_ref) {
 		var entries = _ref.entries;
-		var updateSelected = _ref.updateSelected;
+		var _addSelected = _ref.addSelected;
 		return React.createElement(
 			'div',
 			{ className: 'results' },
-			'RESULTS',
-			entries.map(function (entry) {
-				return React.createElement(RestaurantEntry, { entry: entry, updateSelected: updateSelected });
-			})
+			React.createElement(
+				'span',
+				{ id: 'resultsTitle' },
+				'Search Results'
+			),
+			React.createElement(
+				'div',
+				{ className: 'flexRowWrap' },
+				entries.map(function (entry) {
+					return React.createElement(RestaurantEntry, { entry: entry, addSelected: function addSelected() {
+							console.log(entry, 'consoled it');
+							return _addSelected(entry);
+						} });
+				})
+			)
 		);
 	};
 	
@@ -21653,33 +21696,33 @@
 /* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	var React = __webpack_require__(166);
 	
 	var RestaurantEntry = function RestaurantEntry(_ref) {
 		var entry = _ref.entry;
-		var updateSelected = _ref.updateSelected;
+		var addSelected = _ref.addSelected;
 		return React.createElement(
-			"div",
-			{ className: "entryClass" },
-			React.createElement("img", { src: entry.image_url }),
-			React.createElement("br", null),
-			React.createElement("img", { src: entry.rating_img_url }),
+			'div',
+			{ className: 'restaurantEntry' },
+			React.createElement('img', { src: entry.image_url }),
+			React.createElement('br', null),
+			React.createElement('img', { src: entry.rating_img_url }),
 			React.createElement(
-				"h3",
+				'h3',
 				null,
 				entry.name
 			),
 			React.createElement(
-				"p",
+				'p',
 				null,
-				entry.location.display_address
+				entry.location.city + ', ' + entry.location.state_code
 			),
-			React.createElement("img", { className: "checks", onClick: function onClick() {
-					return updateSelected(entry);
-				}, src: "http://www.452brasil.com/public/componenti/1989/f1/check-mark-5-512.gif" }),
-			React.createElement("img", { className: "checks", src: "https://www.mbamission.com/blog/wp-content/uploads/2015/09/incorrect-294245_1280.png" })
+			React.createElement('img', { className: 'checks', onClick: function onClick() {
+					return addSelected(entry);
+				}, src: 'http://www.452brasil.com/public/componenti/1989/f1/check-mark-5-512.gif' }),
+			React.createElement('img', { className: 'checks', src: 'https://www.mbamission.com/blog/wp-content/uploads/2015/09/incorrect-294245_1280.png' })
 		);
 	};
 	
@@ -21687,6 +21730,96 @@
 
 /***/ },
 /* 176 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var React = __webpack_require__(166);
+	
+	var Nav = function (_React$Component) {
+		_inherits(Nav, _React$Component);
+	
+		function Nav(props) {
+			_classCallCheck(this, Nav);
+	
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Nav).call(this, props));
+		}
+	
+		// inputHandler (e) {
+		// 	this.props.searchYelp(this.state.value);
+		// }
+	
+		// setStateSearch (e) {
+		// 	this.setState({
+		// 		value: e.target.value
+		// 	});
+		// }
+	
+		_createClass(Nav, [{
+			key: "render",
+			value: function render() {
+				return React.createElement(
+					"ul",
+					{ id: "nav" },
+					React.createElement(
+						"li",
+						{ onClick: this.props.searchYelp },
+						React.createElement(
+							"a",
+							{ href: "#" },
+							"Search"
+						)
+					),
+					React.createElement(
+						"li",
+						{ onClick: this.props.getToGoList },
+						React.createElement(
+							"a",
+							{ href: "#" },
+							"To-Go List"
+						)
+					)
+				);
+			}
+		}]);
+	
+		return Nav;
+	}(React.Component);
+	
+	module.exports = Nav;
+
+/***/ },
+/* 177 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var React = __webpack_require__(166);
+	
+	var Title = function Title() {
+			return React.createElement(
+					"div",
+					{ className: "title" },
+					React.createElement(
+							"h1",
+							{ id: "title" },
+							"To - Go"
+					)
+			);
+	};
+	
+	module.exports = Title;
+
+/***/ },
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process, global, setImmediate) {/* @preserve
@@ -27235,10 +27368,10 @@
 	
 	},{"./es5":13}]},{},[4])(4)
 	});                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), (function() { return this; }()), __webpack_require__(177).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), (function() { return this; }()), __webpack_require__(179).setImmediate))
 
 /***/ },
-/* 177 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(3).nextTick;
@@ -27317,99 +27450,7 @@
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(177).setImmediate, __webpack_require__(177).clearImmediate))
-
-/***/ },
-/* 178 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var React = __webpack_require__(166);
-	
-	var Nav = function (_React$Component) {
-		_inherits(Nav, _React$Component);
-	
-		function Nav(props) {
-			_classCallCheck(this, Nav);
-	
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(Nav).call(this, props));
-		}
-	
-		_createClass(Nav, [{
-			key: "inputHandler",
-			value: function inputHandler(e) {
-				this.props.searchYelp(this.state.value);
-			}
-		}, {
-			key: "setStateSearch",
-			value: function setStateSearch(e) {
-				this.setState({
-					value: e.target.value
-				});
-			}
-		}, {
-			key: "render",
-			value: function render() {
-				return React.createElement(
-					"ul",
-					{ id: "nav" },
-					React.createElement(
-						"li",
-						null,
-						React.createElement(
-							"a",
-							{ href: "#" },
-							"Search"
-						)
-					),
-					React.createElement(
-						"li",
-						{ onClick: this.props.getToGoList },
-						React.createElement(
-							"a",
-							{ href: "#" },
-							"To-Go List"
-						)
-					)
-				);
-			}
-		}]);
-	
-		return Nav;
-	}(React.Component);
-	
-	module.exports = Nav;
-
-/***/ },
-/* 179 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	var React = __webpack_require__(166);
-	
-	var Title = function Title() {
-			return React.createElement(
-					"div",
-					{ className: "title" },
-					React.createElement(
-							"h1",
-							{ id: "title" },
-							"To - Go"
-					)
-			);
-	};
-	
-	module.exports = Title;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(179).setImmediate, __webpack_require__(179).clearImmediate))
 
 /***/ }
 /******/ ]);
