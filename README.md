@@ -10,4 +10,4 @@ To Run:
 
 Visit http://localhost:3000 and voila!
 
-![alt tag](http://www.carymeskell.com/portfolio/toGoPortfolio.png)
+![alt tag](http://www.carymeskell.com/img/portfolio/toGoPortfolio.png)
